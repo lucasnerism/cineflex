@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import styled from "styled-components";
-
+import Loading from "../../style/Loading";
 
 export default function SessionsPage() {
     const { idFilme } = useParams();
@@ -32,11 +32,11 @@ export default function SessionsPage() {
             Selecione o horário
             <div>
                 {movie.days.map(ses => (
-                    <SessionContainer>
+                    <SessionContainer data-test="movie-day">
                         {`${ses.weekday} - ${ses.date}`}
                         <ButtonsContainer>
                             {ses.showtimes.map(time => (
-                                <Link to={`/sessao/${time.id}`} ><button>{time.name}</button></Link>
+                                <Link to={`/assentos/${time.id}`} ><button data-test="showtime">{time.name}</button></Link>
                             ))}
                         </ButtonsContainer>
                     </SessionContainer>
@@ -126,21 +126,5 @@ const FooterContainer = styled.div`
                 margin-top: 10px;
             }
         }
-    }
-`;
-
-const Loading = styled.div`
-    display:flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin-top: 100px;
-    font-family: 'Roboto';
-    font-size: 24px;
-    text-align: center;
-    color: #293845;
-    img{
-        width: 150px;
-        margin-top: 20px;
     }
 `;

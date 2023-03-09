@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import Loading from "../../style/Loading";
 
 
 export default function HomePage() {
@@ -32,8 +33,8 @@ export default function HomePage() {
 
             <ListContainer>
                 {movies.map(movie => (
-                    <MovieContainer>
-                        <Link to={`/filme/${movie.id}`} ><img src={movie.posterURL} alt={movie.title} /> </Link>
+                    <MovieContainer data-test="movie" >
+                        <Link to={`/sessoes/${movie.id}`} ><img src={movie.posterURL} alt={movie.title} /> </Link>
                     </MovieContainer>
                 ))}
             </ListContainer>
@@ -72,21 +73,5 @@ const MovieContainer = styled.div`
     img {
         width: 130px;
         height: 190px;
-    }
-`;
-
-const Loading = styled.div`
-    display:flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin-top: 100px;
-    font-family: 'Roboto';
-    font-size: 24px;
-    text-align: center;
-    color: #293845;
-    img{
-        width: 150px;
-        margin-top: 20px;
     }
 `;

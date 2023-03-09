@@ -1,12 +1,16 @@
 import axios from "axios";
 import React, { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import Loading from "../../style/Loading";
 
 export default function SeatsPage() {
     const { idSessao } = useParams();
     const [sessao, setSessao] = React.useState(undefined);
+    const [assentos, setAssentos] = React.useState([]);
+    const [name, setName] = React.useState("");
+    const [cpf, setCpf] = React.useState("");
+    const navigate = useNavigate();
 
     useEffect(() => {
         const url = `https://mock-api.driven.com.br/api/v8/cineflex/showtimes/${idSessao}/seats`;
@@ -31,7 +35,16 @@ export default function SeatsPage() {
             Selecione o(s) assento(s)
 
             <SeatsContainer>
-                <SeatItem>01</SeatItem>
+                {sessao.seats.map(seat => (
+                    <SeatItem
+                        data-test="seat"
+                        key={seat.id}
+                        isAvailable={seat.isAvailable}
+                        selecionado={assentos.includes(seat.id)}
+                        onClick={() => seat.isAvailable ? selecionar(seat.id) : null}
+                    >{seat.name}</SeatItem>
+                ))}
+                <SeatItem data-test="seat">01</SeatItem>
                 <SeatItem>02</SeatItem>
                 <SeatItem>03</SeatItem>
                 <SeatItem>04</SeatItem>
@@ -40,11 +53,11 @@ export default function SeatsPage() {
 
             <CaptionContainer>
                 <CaptionItem>
-                    <CaptionCircle />
+                    <CaptionCircle selecionado />
                     Selecionado
                 </CaptionItem>
                 <CaptionItem>
-                    <CaptionCircle />
+                    <CaptionCircle isAvailable />
                     Disponível
                 </CaptionItem>
                 <CaptionItem>
@@ -53,17 +66,29 @@ export default function SeatsPage() {
                 </CaptionItem>
             </CaptionContainer>
 
-            <FormContainer>
-                Nome do Comprador:
-                <input placeholder="Digite seu nome..." />
+            <FormContainer onSubmit={finalizar}>
+                <label htmlFor="name">Nome do Comprador:</label>
+                <input
+                    id="name"
+                    data-test="client-name"
+                    placeholder="Digite seu nome..."
+                    value={name}
+                    onChange={e => setName(e.target.value)}
+                />
 
-                CPF do Comprador:
-                <input placeholder="Digite seu CPF..." />
+                <label htmlFor="cpf">CPF do Comprador:</label>
+                <input
+                    id="cpf"
+                    data-test="client-cpf"
+                    placeholder="Digite seu CPF..."
+                    value={cpf}
+                    onChange={e => setCpf(e.target.value)}
+                />
 
-                <button>Reservar Assento(s)</button>
+                <button type="submit" data-test="book-seat-btn" >Reservar Assento(s)</button>
             </FormContainer>
 
-            <FooterContainer>
+            <FooterContainer data-test="footer">
                 <div>
                     <img src={sessao.movie.posterURL} alt={sessao.movie.title} />
                 </div>
@@ -75,6 +100,26 @@ export default function SeatsPage() {
 
         </PageContainer>
     );
+    function selecionar(seat) {
+        const arr = [...assentos];
+        if (arr.includes(seat)) {
+            const index = arr.indexOf(seat);
+            arr.splice(index, 1);
+            setAssentos(arr);
+        } else {
+            arr.push(seat);
+            setAssentos(arr);
+        }
+    }
+    function finalizar(e) {
+        e.preventDefault();
+        const ids = assentos;
+        const obj = { name, cpf, ids };
+        const url = "https://mock-api.driven.com.br/api/v8/cineflex/seats/book-many";
+        const promise = axios.post(url, obj);
+        promise.then(() => navigate("/sucesso"));
+        promise.catch(err => console.log(err.response));
+    }
 }
 
 const PageContainer = styled.div`
@@ -98,7 +143,7 @@ const SeatsContainer = styled.div`
     justify-content: center;
     margin-top: 20px;
 `;
-const FormContainer = styled.div`
+const FormContainer = styled.form`
     width: calc(100vw - 40px); 
     display: flex;
     flex-direction: column;
@@ -120,8 +165,7 @@ const CaptionContainer = styled.div`
     margin: 20px;
 `;
 const CaptionCircle = styled.div`
-    border: 1px solid blue;         // Essa cor deve mudar
-    background-color: lightblue;    // Essa cor deve mudar
+    ${props => (props.selecionado ? "border: 1px solid #0E7D71; background-color: #1AAE9E;" : props.isAvailable ? "border: 1px solid #7B8B99; background-color: #C3CFD9;" : "border: 1px solid #F7C52B; background-color: #FBE192;")}
     height: 25px;
     width: 25px;
     border-radius: 25px;
@@ -137,8 +181,7 @@ const CaptionItem = styled.div`
     font-size: 12px;
 `;
 const SeatItem = styled.div`
-    border: 1px solid blue;         // Essa cor deve mudar
-    background-color: lightblue;    // Essa cor deve mudar
+    ${props => (props.selecionado ? "border: 1px solid #0E7D71; background-color: #1AAE9E;" : props.isAvailable ? "border: 1px solid #7B8B99; background-color: #C3CFD9;" : "border: 1px solid #F7C52B; background-color: #FBE192;")}
     height: 25px;
     width: 25px;
     border-radius: 25px;

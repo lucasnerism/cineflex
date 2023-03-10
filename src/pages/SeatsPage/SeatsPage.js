@@ -169,7 +169,9 @@ const CaptionContainer = styled.div`
     margin: 20px;
 `;
 const CaptionCircle = styled.div`
-    ${props => (props.selecionado ? "border: 1px solid #0E7D71; background-color: #1AAE9E;" : props.isAvailable ? "border: 1px solid #7B8B99; background-color: #C3CFD9;" : "border: 1px solid #F7C52B; background-color: #FBE192;")}
+    ${props => (props.selecionado ? "border: 1px solid #0E7D71; background-color: #1AAE9E;"
+        : props.isAvailable ? "border: 1px solid #7B8B99; background-color: #C3CFD9;"
+            : "border: 1px solid #F7C52B; background-color: #FBE192;")}
     height: 25px;
     width: 25px;
     border-radius: 25px;
@@ -185,7 +187,9 @@ const CaptionItem = styled.div`
     font-size: 12px;
 `;
 const SeatItem = styled.div`
-    ${props => (props.selecionado ? "border: 1px solid #0E7D71; background-color: #1AAE9E;" : props.isAvailable ? "border: 1px solid #7B8B99; background-color: #C3CFD9; " : "border: 1px solid #F7C52B; background-color: #FBE192;")}
+    ${props => (props.selecionado ? "border: 1px solid #0E7D71; background-color: #1AAE9E;"
+        : props.isAvailable ? "border: 1px solid #7B8B99; background-color: #C3CFD9; "
+            : "border: 1px solid #F7C52B; background-color: #FBE192;")}
     cursor:pointer;
     height: 25px;
     width: 25px;

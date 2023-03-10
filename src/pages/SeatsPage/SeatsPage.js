@@ -1,15 +1,14 @@
 import axios from "axios";
-import React, { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import Loading from "../../style/Loading";
 
-export default function SeatsPage() {
+export default function SeatsPage(props) {
+    const { assentos, setAssentos, name, setName, cpf, setCpf, setMovie, setDateTime } = props;
     const { idSessao } = useParams();
-    const [sessao, setSessao] = React.useState(undefined);
-    const [assentos, setAssentos] = React.useState([]);
-    const [name, setName] = React.useState("");
-    const [cpf, setCpf] = React.useState("");
+    const [sessao, setSessao] = useState(undefined);
+    const [selecionados, setSelecionados] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -18,6 +17,7 @@ export default function SeatsPage() {
         const promise = axios.get(url);
         promise.then(resp => setSessao(resp.data));
         promise.catch(err => console.log(err.response.data));
+        setAssentos([]);
     }, []);
 
     if (sessao === undefined) {
@@ -40,8 +40,8 @@ export default function SeatsPage() {
                         data-test="seat"
                         key={seat.id}
                         isAvailable={seat.isAvailable}
-                        selecionado={assentos.includes(seat.id)}
-                        onClick={() => seat.isAvailable ? selecionar(seat.id) : null}
+                        selecionado={selecionados.includes(seat.id)}
+                        onClick={() => seat.isAvailable ? selecionar(seat.id, seat.name) : alert("Esse assento não está disponível")}
                     >{seat.name}</SeatItem>
                 ))}
             </SeatsContainer>
@@ -67,6 +67,7 @@ export default function SeatsPage() {
                     id="name"
                     data-test="client-name"
                     placeholder="Digite seu nome..."
+                    required
                     value={name}
                     onChange={e => setName(e.target.value)}
                 />
@@ -76,6 +77,7 @@ export default function SeatsPage() {
                     id="cpf"
                     data-test="client-cpf"
                     placeholder="Digite seu CPF..."
+                    required
                     value={cpf}
                     onChange={e => setCpf(e.target.value)}
                 />
@@ -95,23 +97,30 @@ export default function SeatsPage() {
 
         </PageContainer>
     );
-    function selecionar(seat) {
-        const arr = [...assentos];
-        if (arr.includes(seat)) {
-            const index = arr.indexOf(seat);
+    function selecionar(id, name) {
+        const arr = [...selecionados];
+        const arrname = [...assentos];
+        if (arr.includes(id)) {
+            const index = arr.indexOf(id);
             arr.splice(index, 1);
-            setAssentos(arr);
+            arrname.splice(index, 1);
+            setSelecionados(arr);
+            setAssentos(arrname);
         } else {
-            arr.push(seat);
-            setAssentos(arr);
+            arr.push(id);
+            arrname.push(name);
+            setSelecionados(arr);
+            setAssentos(arrname);
         }
     }
     function finalizar(e) {
         e.preventDefault();
-        const ids = assentos;
+        const ids = selecionados;
         const obj = { name, cpf, ids };
         const url = "https://mock-api.driven.com.br/api/v8/cineflex/seats/book-many";
         const promise = axios.post(url, obj);
+        setMovie(sessao.movie.title);
+        setDateTime(`${sessao.day.date} - ${sessao.name}`);
         promise.then(() => navigate("/sucesso"));
         promise.catch(err => console.log(err.response));
     }
@@ -176,7 +185,8 @@ const CaptionItem = styled.div`
     font-size: 12px;
 `;
 const SeatItem = styled.div`
-    ${props => (props.selecionado ? "border: 1px solid #0E7D71; background-color: #1AAE9E;" : props.isAvailable ? "border: 1px solid #7B8B99; background-color: #C3CFD9;" : "border: 1px solid #F7C52B; background-color: #FBE192;")}
+    ${props => (props.selecionado ? "border: 1px solid #0E7D71; background-color: #1AAE9E;" : props.isAvailable ? "border: 1px solid #7B8B99; background-color: #C3CFD9; " : "border: 1px solid #F7C52B; background-color: #FBE192;")}
+    cursor:pointer;
     height: 25px;
     width: 25px;
     border-radius: 25px;

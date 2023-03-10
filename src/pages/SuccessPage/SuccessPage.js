@@ -1,33 +1,32 @@
-import styled from "styled-components"
+import { Link } from "react-router-dom";
+import styled from "styled-components";
 
-export default function SuccessPage() {
-
+export default function SuccessPage(props) {
+    const { movie, dateTime, assentos, name, cpf } = props;
     return (
         <PageContainer>
             <h1>Pedido feito <br /> com sucesso!</h1>
 
-            <TextContainer>
+            <TextContainer data-test="movie-info">
                 <strong><p>Filme e sessão</p></strong>
-                <p>Tudo em todo lugar ao mesmo tempo</p>
-                <p>03/03/2023 - 14:00</p>
+                <p>{movie}</p>
+                <p>{dateTime}</p>
             </TextContainer>
 
-            <TextContainer>
+            <TextContainer data-test="seats-info">
                 <strong><p>Ingressos</p></strong>
-                <p>Assento 01</p>
-                <p>Assento 02</p>
-                <p>Assento 03</p>
+                {assentos.map(asse => <p>Assento {asse}</p>)}
             </TextContainer>
 
-            <TextContainer>
+            <TextContainer data-test="client-info">
                 <strong><p>Comprador</p></strong>
-                <p>Nome: Letícia Chijo</p>
-                <p>CPF: 123.456.789-10</p>
+                <p>Nome: {name}</p>
+                <p>CPF: {cpf}</p>
             </TextContainer>
 
-            <button>Voltar para Home</button>
+            <Link to="/" ><button data-test="go-home-btn">Voltar para Home</button></Link>
         </PageContainer>
-    )
+    );
 }
 
 const PageContainer = styled.div`
@@ -57,7 +56,7 @@ const PageContainer = styled.div`
         text-align: center;
         color: #247A6B;
     }
-`
+`;
 const TextContainer = styled.div`
     width: 100%;
     display: flex;
@@ -68,4 +67,4 @@ const TextContainer = styled.div`
         font-weight: bold;
         margin-bottom: 10px;
     }
-`
+`;

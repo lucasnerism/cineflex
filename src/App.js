@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import styled from "styled-components";
 import HomePage from "./pages/HomePage/HomePage";
@@ -7,14 +8,35 @@ import SuccessPage from "./pages/SuccessPage/SuccessPage";
 
 
 export default function App() {
+    const [movie, setMovie] = useState("");
+    const [dateTime, setDateTime] = useState("");
+    const [assentos, setAssentos] = useState([]);
+    const [name, setName] = useState("");
+    const [cpf, setCpf] = useState("");
+
     return (
         <BrowserRouter>
             <NavContainer>CINEFLEX</NavContainer>
             <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/sessoes/:idFilme" element={<SessionsPage />} />
-                <Route path="/assentos/:idSessao" element={<SeatsPage />} />
-                <Route path="/sucesso" element={<SuccessPage />} />
+                <Route path="/assentos/:idSessao" element={<SeatsPage
+                    setMovie={setMovie}
+                    setDateTime={setDateTime}
+                    assentos={assentos}
+                    setAssentos={setAssentos}
+                    name={name}
+                    setName={setName}
+                    cpf={cpf}
+                    setCpf={setCpf}
+                />} />
+                <Route path="/sucesso" element={<SuccessPage
+                    movie={movie}
+                    dateTime={dateTime}
+                    assentos={assentos}
+                    name={name}
+                    cpf={cpf}
+                />} />
             </Routes>
         </BrowserRouter>
     );

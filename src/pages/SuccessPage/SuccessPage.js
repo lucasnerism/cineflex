@@ -15,13 +15,18 @@ export default function SuccessPage(props) {
 
             <TextContainer data-test="seats-info">
                 <strong><p>Ingressos</p></strong>
-                {assentos.map(asse => <p>Assento {asse}</p>)}
+                {assentos.map(el => <p key={el.seatname}>Assento {el.seatname}</p>)}
             </TextContainer>
 
             <TextContainer data-test="client-info">
-                <strong><p>Comprador</p></strong>
-                <p>Nome: {name}</p>
-                <p>CPF: {cpf}</p>
+                <strong><p>{assentos.length > 1 ? "Compradores" : "Comprador"}</p></strong>
+                {assentos.map(el => (
+                    <>
+                        <p key={el.seatname} >Nome: {el.name}</p>
+                        <p>CPF: {el.cpf}</p>
+                    </>
+                ))}
+
             </TextContainer>
 
             <Link to="/" ><button data-test="go-home-btn">Voltar para Home</button></Link>

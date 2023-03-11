@@ -40,10 +40,15 @@ const NavContainer = styled.div`
         text-decoration: none;
         color: #E8833A;
     }    
-    img{
-        width: 30px;
+    
+    button{
         position: fixed;
         left: 1.5%;
         top: 2.2%;
+        background-color: #C3CFD9;
+      }
+
+    img{
+        width: 30px;    
     }
 `;

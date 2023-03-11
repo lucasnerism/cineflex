@@ -11,9 +11,6 @@ export default function App() {
     const [movie, setMovie] = useState("");
     const [dateTime, setDateTime] = useState("");
     const [assentos, setAssentos] = useState([]);
-    const [name, setName] = useState("");
-    const [cpf, setCpf] = useState("");
-
 
     return (
         <BrowserRouter>
@@ -26,17 +23,11 @@ export default function App() {
                     setDateTime={setDateTime}
                     assentos={assentos}
                     setAssentos={setAssentos}
-                    name={name}
-                    setName={setName}
-                    cpf={cpf}
-                    setCpf={setCpf}
                 />} />
                 <Route path="/sucesso" element={<SuccessPage
                     movie={movie}
                     dateTime={dateTime}
                     assentos={assentos}
-                    name={name}
-                    cpf={cpf}
                 />} />
             </Routes>
         </BrowserRouter>

@@ -5,10 +5,10 @@ import styled from "styled-components";
 import Loading from "../../style/Loading";
 
 export default function SeatsPage(props) {
-    const { assentos, setAssentos, name, setName, cpf, setCpf, setMovie, setDateTime } = props;
+    const { assentos, setAssentos, setMovie, setDateTime } = props;
     const { idSessao } = useParams();
     const [sessao, setSessao] = useState(undefined);
-    const [selecionados, setSelecionados] = useState([]);
+    const [form, setForm] = useState([{}]);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -40,7 +40,7 @@ export default function SeatsPage(props) {
                         data-test="seat"
                         key={seat.id}
                         isAvailable={seat.isAvailable}
-                        selecionado={selecionados.includes(seat.id)}
+                        selecionado={assentos.some(el => el.seatid === seat.id)}
                         onClick={() => seat.isAvailable ? selecionar(seat.id, seat.name) : alert("Esse assento não está disponível")}
                     >{seat.name}</SeatItem>
                 ))}
@@ -62,25 +62,33 @@ export default function SeatsPage(props) {
             </CaptionContainer>
 
             <FormContainer onSubmit={finalizar}>
-                <label htmlFor="name">Nome do Comprador:</label>
-                <input
-                    id="name"
-                    data-test="client-name"
-                    placeholder="Digite seu nome..."
-                    required
-                    value={name}
-                    onChange={e => setName(e.target.value)}
-                />
+                {assentos.map((obj, index) => (
+                    <div key={index}>
+                        <label htmlFor="name">{`Nome do Comprador:${obj.seatname}`}</label>
+                        <input
+                            id={obj.seatname}
+                            name="name"
+                            data-test="client-name"
+                            placeholder="Digite seu nome..."
+                            required
+                            index={index}
+                            onChange={e => handleChange(e, index)}
+                            value={obj.name}
+                        />
+                        <label htmlFor="cpf">{`CPF do Comprador:${obj.seatname}`}</label>
+                        <input
+                            id={obj.seatname}
+                            name="cpf"
+                            data-test="client-cpf"
+                            placeholder="Digite seu CPF..."
+                            required
+                            onChange={e => handleChange(e, index)}
+                            index={index}
+                            value={obj.cpf}
+                        />
+                    </div>
+                ))}
 
-                <label htmlFor="cpf">CPF do Comprador:</label>
-                <input
-                    id="cpf"
-                    data-test="client-cpf"
-                    placeholder="Digite seu CPF..."
-                    required
-                    value={cpf}
-                    onChange={e => setCpf(e.target.value)}
-                />
 
                 <button type="submit" data-test="book-seat-btn" >Reservar Assento(s)</button>
             </FormContainer>
@@ -97,26 +105,35 @@ export default function SeatsPage(props) {
 
         </PageContainer>
     );
-    function selecionar(id, name) {
-        const arr = [...selecionados];
-        const arrname = [...assentos];
-        if (arr.includes(id)) {
-            const index = arr.indexOf(id);
-            arr.splice(index, 1);
-            arrname.splice(index, 1);
-            setSelecionados(arr);
-            setAssentos(arrname);
+
+    function selecionar(seatid, seatname) {
+        const obj = { seatid, seatname, name: "", cpf: "" };
+        const arr = [...assentos];
+        if (arr.some(el => el.seatid === seatid)) {
+            const newarr = arr.filter(el => el.seatid !== seatid);
+            setAssentos(newarr);
         } else {
-            arr.push(id);
-            arrname.push(name);
-            setSelecionados(arr);
-            setAssentos(arrname);
+            arr.push(obj);
+            setAssentos(arr);
         }
     }
+
+    function handleChange(event, index) {
+        const data = [...assentos];
+        data[index][event.target.name] = event.target.value;
+        setAssentos(data);
+    }
+
     function finalizar(e) {
         e.preventDefault();
-        const ids = selecionados;
-        const obj = { name, cpf, ids };
+        const ids = [];
+        const compradores = [];
+        assentos.forEach(el => {
+            ids.push(el.seatid);
+            compradores.push({ idAssento: el.seatid, name: el.name, cpf: el.cpf });
+        });
+        const obj = { ids, compradores };
+        console.log(obj);
         const url = "https://mock-api.driven.com.br/api/v8/cineflex/seats/book-many";
         const promise = axios.post(url, obj);
         setMovie(sessao.movie.title);

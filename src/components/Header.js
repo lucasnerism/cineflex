@@ -16,11 +16,13 @@ export default function Header() {
         <Link to="/" >CINEFLEX</Link>
       </NavContainer>
     );
-  } else return (
-    <NavContainer>
-      <Link to="/" >CINEFLEX</Link>
-    </NavContainer>
-  );
+  } else {
+    return (
+      <NavContainer>
+        <Link to="/" >CINEFLEX</Link>
+      </NavContainer>
+    );
+  }
 }
 
 
@@ -42,9 +44,10 @@ const NavContainer = styled.div`
     }    
     
     button{
-        position: fixed;
-        left: 1.5%;
-        top: 2.2%;
+        position: absolute;
+        left: 18px;
+        top: 50%;
+        transform: translateY(-50%);
         background-color: #C3CFD9;
       }
 

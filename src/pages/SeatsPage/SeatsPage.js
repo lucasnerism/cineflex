@@ -8,7 +8,6 @@ export default function SeatsPage(props) {
     const { assentos, setAssentos, setMovie, setDateTime } = props;
     const { idSessao } = useParams();
     const [sessao, setSessao] = useState(undefined);
-    const [form, setForm] = useState([{}]);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -109,20 +108,20 @@ export default function SeatsPage(props) {
     function selecionar(seatid, seatname) {
         const obj = { seatid, seatname, name: "", cpf: "" };
         const arr = [...assentos];
-        if (arr.some(el => el.seatid === seatid)) {
-            if (arr.some(el => el.name !== "" || el.cpf !== "")) {
-                if (window.confirm("Gostaria realmente de remover o assento e apagar os dados?") === true) {
-                    const newarr = arr.filter(el => el.seatid !== seatid);
-                    setAssentos(newarr);
-                }
-            } else {
-                const newarr = arr.filter(el => el.seatid !== seatid);
-                setAssentos(newarr);
-            }
-        } else {
+        const index = arr.findIndex(el => el.seatid === seatid);
+        console.log(index);
+        if (index === -1) {
             arr.push(obj);
             setAssentos(arr);
+            return;
         }
+        if (arr[index].name !== "" || arr[index].cpf !== "") {
+            if (window.confirm("Gostaria realmente de remover o assento e apagar os dados?") === false) {
+                return;
+            }
+        }
+        const newarr = arr.filter(el => el.seatid !== seatid);
+        setAssentos(newarr);
     }
 
     function handleChange(event, index) {

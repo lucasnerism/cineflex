@@ -110,8 +110,15 @@ export default function SeatsPage(props) {
         const obj = { seatid, seatname, name: "", cpf: "" };
         const arr = [...assentos];
         if (arr.some(el => el.seatid === seatid)) {
-            const newarr = arr.filter(el => el.seatid !== seatid);
-            setAssentos(newarr);
+            if (arr.some(el => el.name !== "" || el.cpf !== "")) {
+                if (window.confirm("Gostaria realmente de remover o assento e apagar os dados?") === true) {
+                    const newarr = arr.filter(el => el.seatid !== seatid);
+                    setAssentos(newarr);
+                }
+            } else {
+                const newarr = arr.filter(el => el.seatid !== seatid);
+                setAssentos(newarr);
+            }
         } else {
             arr.push(obj);
             setAssentos(arr);

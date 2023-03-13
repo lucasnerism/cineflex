@@ -62,7 +62,7 @@ export default function SeatsPage(props) {
 
             <FormContainer onSubmit={finalizar}>
                 {assentos.map((obj, index) => (
-                    <div key={index}>
+                    <>
                         <label htmlFor="name">{`Nome do Comprador:${obj.seatname}`}</label>
                         <input
                             id={obj.seatname}
@@ -70,7 +70,6 @@ export default function SeatsPage(props) {
                             data-test="client-name"
                             placeholder="Digite seu nome..."
                             required
-                            index={index}
                             onChange={e => handleChange(e, index)}
                             value={obj.name}
                         />
@@ -82,10 +81,9 @@ export default function SeatsPage(props) {
                             placeholder="Digite seu CPF..."
                             required
                             onChange={e => handleChange(e, index)}
-                            index={index}
                             value={obj.cpf}
                         />
-                    </div>
+                    </>
                 ))}
 
 

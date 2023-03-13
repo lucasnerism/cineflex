@@ -8,6 +8,7 @@ export default function SeatsPage(props) {
     const { assentos, setAssentos, setMovie, setDateTime } = props;
     const { idSessao } = useParams();
     const [sessao, setSessao] = useState(undefined);
+    const [selecionados, setSelecionados] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -39,7 +40,7 @@ export default function SeatsPage(props) {
                         data-test="seat"
                         key={seat.id}
                         isAvailable={seat.isAvailable}
-                        selecionado={assentos.some(el => el.seatid === seat.id)}
+                        selecionado={selecionados.includes(seat.id)}
                         onClick={() => seat.isAvailable ? selecionar(seat.id, seat.name) : alert("Esse assento não está disponível")}
                     >{seat.name}</SeatItem>
                 ))}
@@ -106,11 +107,13 @@ export default function SeatsPage(props) {
     function selecionar(seatid, seatname) {
         const obj = { seatid, seatname, name: "", cpf: "" };
         const arr = [...assentos];
+        const aux = [...selecionados];
         const index = arr.findIndex(el => el.seatid === seatid);
-        console.log(index);
         if (index === -1) {
             arr.push(obj);
+            aux.push(seatid);
             setAssentos(arr);
+            setSelecionados(aux);
             return;
         }
         if (arr[index].name !== "" || arr[index].cpf !== "") {
@@ -119,7 +122,9 @@ export default function SeatsPage(props) {
             }
         }
         const newarr = arr.filter(el => el.seatid !== seatid);
+        const newaux = aux.filter(el => el !== seatid);
         setAssentos(newarr);
+        setSelecionados(newaux);
     }
 
     function handleChange(event, index) {
